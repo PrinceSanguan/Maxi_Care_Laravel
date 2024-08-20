@@ -1,0 +1,197 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #003399;
+    height: 100vh;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: auto;
+}
+
+.sidebar-logo {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+    height: auto;
+    padding: 10px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin: 20px 0;
+}
+
+.sidebar-nav a {
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-nav a.active,
+.sidebar-nav a:hover {
+    background-color: #d4d4f5;
+    color: #003399;
+}
+
+.main-content {
+    margin-left: 240px;
+    padding: 20px;
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 2px solid #003399;
+    margin-bottom: 20px;
+}
+
+.main-header h1 {
+    margin: 0;
+    color: #003399;
+    font-size: 24px;
+}
+
+.user-info {
+    font-size: 16px;
+    color: #003399;
+}
+
+.home-section,
+.users-section,
+.sales-report-section {
+    margin-bottom: 20px;
+}
+
+.home-section h2,
+.users-section h2,
+.sales-report-section h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: #003399;
+}
+
+.dashboard-content,
+.users-content,
+.sales-report-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.charts img {
+    max-width: 100%;
+    height: auto;
+}
+
+.users-section {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.users-section h2 {
+    color: #003399;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.new-user-btn {
+    background-color: #003399;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    float: right;
+}
+
+.new-user-btn:hover {
+    background-color: #002080;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.user-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    color: #003399;
+}
+
+.user-table td {
+    background-color: #fff;
+}
+
+.action-btn {
+    background-color: #003399;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.action-btn:hover {
+    background-color: #002080;
+}
+
+.footer {
+    background-color: #e0e7ff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+}
+
+.footer-logo img.small-logo {
+    width: 30px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.footer p {
+    color: #003399;
+    margin: 0;
+}
