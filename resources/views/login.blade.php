@@ -6,27 +6,29 @@
     <title>Maxi Health - Sign In</title>
     <link rel="stylesheet" href="{{asset('css/login.css')}}">
     <link rel="icon" href="maxi.jpg" >
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLR3LNmFA08kr4E9I5T9q1z34Vyc5Y5PVBamA5rPQJ" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <img src="{{asset('images/maxi.jpg')}}" alt="Maxi Health Logo" class="logo">
+
             <div class="form-container">
-                <form action="login.php" method="POST" class="login-form">
+
+                <form action="{{route('login.form')}}" method="post" class="login-form">
+                    @csrf
              
-                    
                     <div class="form-group">
-                        <label for="username">Email</label>
-                        <input type="text" id="username" name="username" >
+                        <label>Email</label>
+                        <input type="email" name="email" >
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" >
+                        <label>Password</label>
+                        <input type="password" name="password" >
                     </div>
-                    <button type="button" class="btn-submit">
-                        <a href="home.html">Login</a>
-                    </button>
-                    <p>Already have an account? <a href="index.html">Create Account</a></p>
+                    <button type="submit" class="btn-submit">Login</button>
+                    {{-- <p>Already have an account? <a href="{{route('signup')}}">Create Account</a></p> --}}
                 </form>
             </div>
         </div>
@@ -72,5 +74,35 @@
                 <p>&copy; 2024 Maxi Health. All Rights Reserved.</p>
             </div>
         </footer>
+
+
+        <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-QJHtvGhmr9A5eYIAdQ6uv0jNmTg+zxD5y5Wo5M5O0K6+Vi+II1GxikAjwQ76fh0B" crossorigin="anonymous"></script>
+
+  <!----Sweet Alert---->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'Try Again'
+            });
+        @endif
+    });
+</script>
+
 </body>
 </html>
