@@ -1,0 +1,247 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #003399;
+    height: 100vh;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: auto;
+}
+
+.sidebar-logo {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+    height: auto;
+    padding: 10px;
+}
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.show-entries label,
+.search-box label {
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.show-entries select,
+.search-box input[type="text"] {
+    margin-left: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.show-entries select {
+    width: auto;
+}
+
+.search-box input[type="text"] {
+    width: 200px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin: 20px 0;
+}
+
+.sidebar-nav a {
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-nav a.active,
+.sidebar-nav a:hover {
+    background-color: #d4d4f5;
+    color: #003399;
+}
+
+.main-content {
+    margin-left: 240px;
+    padding: 20px;
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #e0e7ff;
+    border-bottom: 2px solid #003399;
+}
+
+.main-header h1 {
+    margin: 0;
+    color: #003399;
+    font-size: 24px;
+}
+
+.user-info {
+    font-size: 16px;
+    color: #003399;
+}
+
+.product-section {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.product-form,
+.medicine-list {
+    width: 48%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.product-form h2,
+.medicine-list h2 {
+    font-size: 22px;
+    color: #003399;
+    margin-bottom: 10px;
+}
+
+.product-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.product-form input[type="text"],
+.product-form input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.product-form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.save-btn,
+.cancel-btn {
+    background-color: #003399;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.cancel-btn {
+    background-color: #ff3333;
+}
+
+.medicine-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.medicine-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.medicine-list th,
+.medicine-list td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.medicine-list th {
+    background-color: #e0e7ff;
+    font-weight: bold;
+}
+
+.medicine-list td .action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-btn,
+.delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    flex: 1;
+}
+
+.edit-btn {
+    background-color: #003399;
+    color: #fff;
+}
+
+.delete-btn {
+    background-color: #ff3333;
+    color: #fff;
+}
+
+.medicine-list td .action-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.footer {
+    color: #003399;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+}
+
+.small-logo {
+    width: 40px;
+    margin-right: 10px;
+}

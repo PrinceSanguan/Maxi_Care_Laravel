@@ -15,6 +15,11 @@ class AdminController extends Controller
 
     public function index()
     {
+        return view ('admin.home');
+    }
+
+    public function dashboard()
+    {
         // Fetch all users where userRole is 'staff'
         $staff = User::where('userRole', 'staff')->get();
     
@@ -47,5 +52,10 @@ class AdminController extends Controller
     
         // Redirect with success message
         return redirect()->route('admin.dashboard')->with('success', 'You have successfully  added new user!');
+    }
+
+    public function salesReport()
+    {
+        return view ('admin.sales-report');
     }
 }

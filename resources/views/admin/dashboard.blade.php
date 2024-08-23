@@ -5,28 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SO Users</title>
     <link rel="stylesheet" href="{{asset('css/dashboard.css')}}">
-    <link rel="icon" href="maxi.jpg">
+    <link rel="icon" href="{{asset('images/maxi.jpg')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo-section">
-            <img src="{{asset('images/maxi3.png')}}" alt="Maxi Health Logo" class="sidebar-logo">
-        </div>
-        <nav class="sidebar-nav">
 
-            <ul>
-                <li><a href="storeownerhome.html"><i class="fa-solid fa-house"></i> Home</a></li>
-                <li><a href="users.html" class="active"><i class="fa-solid fa-user"></i> Users</a></li>
-                <li><a href="SOsalesreport.html"><i class="fa-solid fa-chart-line"></i> Sales Report</a></li>
-                <li><a href="{{route('logout')}}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-            </ul>            
-
-        </nav>
-    </div>
+    @include('admin.sidebar')
 
     <div class="main-content">
         <header class="main-header">

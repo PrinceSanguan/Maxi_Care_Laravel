@@ -27,10 +27,27 @@ Route::post('/', [SignupController::class, 'signUp'])->name('signup.form'); */
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'loginForm'])->name('login.form');
 
-Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+/******************************************** This Route is For Admin *****************************/
+Route::get('admin/home', [AdminController::class, 'index'])->name('admin.home');
+
+Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::post('admin/dashboard', [AdminController::class, 'newUser'])->name('admin.new.user');
 
+Route::get('admin/sales-report', [AdminController::class, 'salesReport'])->name('admin.sales-report');
+/******************************************** This Route is For Admin *****************************/
+
+/******************************************** This Route is For Staff *****************************/
 Route::get('staff/home', [StaffController::class, 'index'])->name('staff.home');
+
+Route::get('staff/stock', [StaffController::class, 'stock'])->name('staff.stock');
+Route::get('staff/sales', [StaffController::class, 'sales'])->name('staff.sales');
+Route::get('staff/receiving', [StaffController::class, 'receiving'])->name('staff.receiving');
+Route::get('staff/product-category', [StaffController::class, 'productCategory'])->name('staff.product-category');
+Route::get('staff/product-list', [StaffController::class, 'productList'])->name('staff.product-list');
+Route::get('staff/expired-list', [StaffController::class, 'expiredList'])->name('staff.expired-list');
+Route::get('staff/supplier-list', [StaffController::class, 'supplierList'])->name('staff.supplier-list');
+/******************************************** This Route is For Staff *****************************/
+
 
     /******************************************** This Route is For Logout *****************************/
     Route::get('/logout', function (Request $request) {
