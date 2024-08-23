@@ -5,9 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maxi Health - Sign In</title>
     <link rel="stylesheet" href="{{asset('css/login.css')}}">
-    <link rel="icon" href="maxi.jpg" >
+    <link rel="icon" href="{{asset('images/maxi.jpg')}}" >
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLR3LNmFA08kr4E9I5T9q1z34Vyc5Y5PVBamA5rPQJ" crossorigin="anonymous">
+
+  <!-- Open Graph meta tags -->
+ <meta property="og:title" content="Maxi Health | Pharmacy and Medical Supplies" />
+ <meta property="og:image" content="{{ url(asset('images/maxi.jpg')) }}" />
+ <meta property="og:url" content="http://maxi-cares.free.nf/" />
+ <meta property="og:site_name" content="Maxi Health | Pharmacy and Medical Supplies" />
+ <meta property="og:description" content="Maxi Health | Pharmacy and Medical Supplies" />
+
 </head>
 <body>
     <div class="container">
