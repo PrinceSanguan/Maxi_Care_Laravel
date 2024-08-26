@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Supplier;
 use App\Models\Category;
 use App\Models\Medicine;
+use App\Models\Receive;
+use App\Models\Sales;
 
 class StaffController extends Controller
 {
@@ -27,12 +29,118 @@ class StaffController extends Controller
 
     public function sales()
     {
-        return view ('staff.sales');
+        $sales = Sales::all();
+        return view ('staff.sales', compact('sales'));
+    }
+
+    public function newSales(Request $request)
+    {
+        $request->validate([
+            'reference' => 'required|string|max:255',  
+            'amount' => 'required|integer|min:1', 
+        ]);
+
+        
+        // Saving in the database
+        $sales = Sales::create([
+            'reference' => $request->input('reference'),
+            'amount' => $request->input('amount'),
+        ]);
+
+        if (!$sales) {
+            return redirect()->route('staff.sales')->with('error', 'Failed to create a sales.');
+        }
+    
+        // Redirect with success message
+        return redirect()->route('staff.sales')->with('success', 'You have successfully create a sales');
+    }
+
+    public function updateSales(Request $request)
+    {
+        $sales = Sales::find($request->input('salesId'));
+        $sales->reference = $request->input('salesReference');
+        $sales->amount = $request->input('salesAmount');
+        
+        $sales->save();
+
+        return redirect()->back()->with('success', 'Updated successfully');
+    }
+
+    public function deleteSales($id)
+    {
+        $sales = Sales::find($id);
+
+        if ($sales) {
+            $sales->delete();
+            return redirect()->back()->with('success', 'deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'not found.');
+        }
     }
 
     public function receiving()
     {
-        return view ('staff.receiving');
+        $suppliers = Supplier::all();
+        $receives = Receive::all();
+
+        return view ('staff.receiving', compact('suppliers', 'receives'));
+    }
+
+    public function receiveForm(Request $request)
+    {
+        $request->validate([
+            'supplier' => 'required|string|max:255',   // Ensure supplier is a string and not too long
+            'product' => 'required|string|max:255',    // Ensure product is a string and not too long
+            'reference' => 'required|string|max:255', // Ensure reference is unique in the 'receives' table
+            'quantity' => 'required|integer|min:1',    // Ensure quantity is an integer and greater than or equal to 1
+            'amount' => 'required|numeric|min:0',      // Ensure amount is a number and not negative
+            'expired' => 'required|date|after:today',  // Ensure expired is a valid date and after today
+        ]);
+
+        // Saving in the database
+        $receive = Receive::create([
+            'supplier' => $request->input('supplier'),
+            'product' => $request->input('product'),
+            'reference' => $request->input('reference'),
+            'quantity' => $request->input('quantity'),
+            'amount' => $request->input('amount'),
+            'expired' => $request->input('expired'),
+        ]);
+
+        if (!$receive) {
+            return redirect()->route('staff.receiving')->with('error', 'Failed to receive a product.');
+        }
+    
+        // Redirect with success message
+        return redirect()->route('staff.receiving')->with('success', 'You have successfully receive a product');
+
+    }
+
+    public function updateReceive(Request $request)
+    {
+        $receive = Receive::find($request->input('receiveId'));
+        $receive->reference = $request->input('receiveReference');
+        $receive->product = $request->input('receiveProduct');
+        $receive->quantity = $request->input('receiveQuantity');
+        $receive->expired = $request->input('receiveExpired');
+        $receive->amount = $request->input('receiveAmount');
+        $receive->supplier = $request->input('receiveSupplier');
+        
+        $receive->save();
+
+        return redirect()->back()->with('success', 'Updated successfully');
+    }
+
+    public function deleteReceive($id)
+    {
+        $receive = Receive::find($id);
+
+        if ($receive) {
+            $receive->delete();
+            return redirect()->back()->with('success', 'deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'not found.');
+        }
     }
 
     public function productCategory()

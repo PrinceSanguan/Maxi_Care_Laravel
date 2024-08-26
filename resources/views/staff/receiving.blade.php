@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="{{asset('css/receiving.css')}}">
     <link rel="icon" href="maxi.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
    @include('staff.sidebar')
@@ -22,7 +24,8 @@
 
         <section class="inventory">
        
-                <button class="new-sales-btn"><i class="fa fa-plus"></i> Receiving</button>
+                <!-- Button to open the modal -->
+    <button class="new-sales-btn btn btn-primary"><i class="fa fa-plus"></i> Receiving</button>
        
             <div class="inventory-controls">
                 <label>Show 
@@ -52,83 +55,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>June 3, 2024</td>
-                        <td>00000000</td>
-                        <td>Product A</td>
-                        <td>100</td>
-                        <td>June 3, 2025</td>
-                        <td>100.00</td>
-                        <td>Supplier A</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>May 20, 2024</td>
-                        <td>50031334</td>
-                        <td>Product B</td>
-                        <td>50</td>
-                        <td>May 20, 2025</td>
-                        <td>250.00</td>
-                        <td>Supplier B</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>June 5, 2024</td>
-                        <td>30045234</td>
-                        <td>Product C</td>
-                        <td>30</td>
-                        <td>June 5, 2025</td>
-                        <td>550.00</td>
-                        <td>Supplier C</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>June 2, 2024</td>
-                        <td>31341520</td>
-                        <td>Product D</td>
-                        <td>75</td>
-                        <td>June 2, 2025</td>
-                        <td>750.00</td>
-                        <td>Supplier D</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>June 10, 2024</td>
-                        <td>32351520</td>
-                        <td>Product E</td>
-                        <td>45</td>
-                        <td>June 10, 2025</td>
-                        <td>150.00</td>
-                        <td>Supplier E</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>June 8, 2024</td>
-                        <td>55551520</td>
-                        <td>Product F</td>
-                        <td>60</td>
-                        <td>June 8, 2025</td>
-                        <td>170.00</td>
-                        <td>Supplier F</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>June 9, 2024</td>
-                        <td>12462520</td>
-                        <td>Product G</td>
-                        <td>80</td>
-                        <td>June 9, 2025</td>
-                        <td>670.00</td>
-                        <td>Supplier G</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
+                    @foreach($receives as $index => $receive)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $receive->created_at ? $receive->created_at->format('F j, Y') : 'N/A' }}</td>
+                            <td>{{$receive->reference}}</td>
+                            <td>{{$receive->product}}</td>
+                            <td>{{$receive->quantity}}</td>
+                            <td>{{ $receive->expired->format('F j, Y') }}</td>
+                            <td>{{$receive->amount}}</td>
+                            <td>{{$receive->supplier}}</td>
+                            <td>
+                                <button class="action-btn edit-btn btn btn-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editModal"
+                                    data-receive-id="{{ $receive->id }}"
+                                    data-receive-reference="{{ $receive->reference }}"
+                                    data-receive-product="{{ $receive->product }}"
+                                    data-receive-quantity="{{ $receive->quantity }}"
+                                    data-receive-expired="{{ $receive->expired }}"
+                                    data-receive-amount="{{ $receive->amount }}"
+                                    >
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+                                <form action="{{ route('staff.receive-delete', $receive->id) }}" method="post" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this supplier?');">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
             <div class="pagination">
@@ -141,85 +100,194 @@
             </div>
         </section>
     </div>
-    <div id="newSalesModal" class="modal">
+
+<!-- Modal -->
+<div id="newSalesModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Manage Receiving</h2>
-            <form>
-                <div class="form-group">
-                    <label for="supplier">Supplier</label>
-                    <input type="text" id="supplier" name="supplier" value="Supplier 1">
-                </div>
-                <div class="form-group">
-                    <label for="productName">Product Name</label>
-                    <input type="text" id="productName" name="productName">
-                </div>
-                <div class="form-group">
-                    <label for="quantity">Quantity</label>
-                    <input type="number" id="quantity" name="quantity">
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount" name="amount">
-                </div>
-                <div class="form-group">
-                    <label for="expiryDate">Expiration Date</label>
-                    <input type="date" id="expiryDate" name="expiryDate">
-                </div>
-                <button type="button" id="addToList">Add to list</button>
-            </form>
-            <table class="inventory-table">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th>Expiration Date</th>
-                        <th>Amount</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Name: Loperamide 250mg Category: Branded</td>
-                        <td>500</td>
-                        <td>June 3, 2026</td>
-                        <td>4800</td>
-                        <td><button class="delete-btn">Delete</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button id="saveBtn">Save</button>
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Receiving</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <form method="post" action="{{ route('staff.receive-form') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Supplier</label>
+                        <select id="category" name="supplier" class="form-control" required>
+                            <option value="">Select a supplier</option>
+                            @foreach($suppliers as $supplier)
+                                <option value="{{ $supplier->supplier }}">{{ $supplier->supplier }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productName">Product Name</label>
+                        <input type="text" id="productName" name="product" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="reference">Reference Number</label>
+                        <input type="text" id="reference" name="reference" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" name="amount" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="expiryDate">Expiration Date</label>
+                        <input type="date" id="expiryDate" name="expired" class="form-control">
+                    </div>
+                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+            
+            
         </div>
     </div>
-    <script>
-        // Get the modal
-        var modal = document.getElementById("newSalesModal");
+</div>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{route('staff.receive-update')}}" method="post">
+                    @csrf
+                    <input type="hidden" id="receiveId" name="receiveId">
     
-        // ito yung button para ma open ung modal
-        var btn = document.querySelector(".new-sales-btn");
+                    <div class="mb-3">
+                        <label>Reference</label>
+                        <input type="text" class="form-control" id="receiveReference" name="receiveReference" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Product name</label>
+                        <input type="text" class="form-control" id="receiveProduct" name="receiveProduct" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Quantity</label>
+                        <input type="number" class="form-control" id="receiveQuantity" name="receiveQuantity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Expiry date</label>
+                        <input type="date" class="form-control" id="receiveExpired" name="receiveExpired" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Amount</label>
+                        <input type="text" class="form-control" id="receiveAmount" name="receiveAmount" required>
+                    </div>
     
-        
-        var span = document.getElementsByClassName("close")[0];
-    
-        
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-    
-        // pang x pag na open na ung modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-    
-        // pag na open na simple na exx nalang
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
-    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
    @include('staff.footer')
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Open modal on button click
+            document.querySelector('.new-sales-btn').addEventListener('click', function () {
+                $('#newSalesModal').modal('show');
+            });
+
+            // Ensure the modal can be closed by the 'X' button
+            document.querySelector('.modal .close').addEventListener('click', function () {
+                $('#newSalesModal').modal('hide');
+            });
+
+            // Ensure the modal can be closed by the 'Close' button in the footer
+            document.querySelector('.modal-footer .btn-secondary').addEventListener('click', function () {
+                $('#newSalesModal').modal('hide');
+            });
+        });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var editModal = document.getElementById('editModal');
+        
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            
+            // Extract data-* attributes from the button
+            var receiveId = button.getAttribute('data-receive-id');
+            var receiveReference = button.getAttribute('data-receive-reference');
+            var receiveProduct = button.getAttribute('data-receive-product');
+            var receiveQuantity = button.getAttribute('data-receive-quantity');
+            var receiveExpired = button.getAttribute('data-receive-expired');
+            var receiveAmount = button.getAttribute('data-receive-amount');
+            
+            // Populate the modal form fields with the data
+            editModal.querySelector('#receiveId').value = receiveId;
+            editModal.querySelector('#receiveReference').value = receiveReference;
+            editModal.querySelector('#receiveProduct').value = receiveProduct;
+            editModal.querySelector('#receiveQuantity').value = receiveQuantity;
+            editModal.querySelector('#receiveExpired').value = receiveExpired;
+            editModal.querySelector('#receiveAmount').value = receiveAmount;
+
+        });
+    });
+</script>
+
+    <!----Sweet Alert---->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+    
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'Try Again'
+                });
+            @endif
+        });
+    </script> 
+
+<script>
+    // JavaScript to set the minimum date for the expiration date input
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('expiryDate').setAttribute('min', today);
+    });
+</script>
 
 </body>
 </html>

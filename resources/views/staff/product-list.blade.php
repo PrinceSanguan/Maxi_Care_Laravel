@@ -30,6 +30,7 @@
                 <form action="{{route('staff.add-medicine')}}" method="post">
                     @csrf
                     <h2>Product form</h2>
+                    
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
                         <select id="category" name="category" class="form-control" required>

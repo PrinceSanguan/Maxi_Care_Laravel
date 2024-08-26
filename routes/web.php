@@ -40,8 +40,16 @@ Route::get('admin/sales-report', [AdminController::class, 'salesReport'])->name(
 Route::get('staff/home', [StaffController::class, 'index'])->name('staff.home');
 
 Route::get('staff/stock', [StaffController::class, 'stock'])->name('staff.stock');
+
 Route::get('staff/sales', [StaffController::class, 'sales'])->name('staff.sales');
+Route::post('staff/sales', [StaffController::class, 'newSales'])->name('staff.new-sales');
+Route::post('staff/sales/update', [StaffController::class, 'updateSales'])->name('staff.update-sales');
+Route::delete('staff/sales/delete/{id}', [StaffController::class, 'deleteSales'])->name('staff.delete-sales');
+
 Route::get('staff/receiving', [StaffController::class, 'receiving'])->name('staff.receiving');
+Route::post('staff/receiving/add', [StaffController::class, 'receiveForm'])->name('staff.receive-form');
+Route::post('staff/receiving/update', [StaffController::class, 'updateReceive'])->name('staff.receive-update');
+Route::delete('staff/receiving/delete/{id}', [StaffController::class, 'deleteReceive'])->name('staff.receive-delete');
 
 Route::get('staff/product-category', [StaffController::class, 'productCategory'])->name('staff.product-category');
 Route::post('staff/product-category', [StaffController::class, 'makeProductCategory'])->name('staff.make-category');
