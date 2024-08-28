@@ -22,9 +22,12 @@ class StaffController extends Controller
         return view ('staff.home');
     }
 
-    public function stock()
-    {
-        return view ('staff.stock');
+    public function stock() {
+        // Fetch the product name and quantity from the Receiving model
+        $productNames = Receive::select('product', 'quantity')->get();
+    
+        // Pass the product name to the view
+        return view('staff.stock', compact('productNames'));
     }
 
     public function sales()
@@ -94,6 +97,7 @@ class StaffController extends Controller
             'reference' => 'required|string|max:255', // Ensure reference is unique in the 'receives' table
             'quantity' => 'required|integer|min:1',    // Ensure quantity is an integer and greater than or equal to 1
             'amount' => 'required|numeric|min:0',      // Ensure amount is a number and not negative
+            'dateReceived' => 'required|date',
             'expired' => 'required|date|after:today',  // Ensure expired is a valid date and after today
         ]);
 
@@ -104,6 +108,7 @@ class StaffController extends Controller
             'reference' => $request->input('reference'),
             'quantity' => $request->input('quantity'),
             'amount' => $request->input('amount'),
+            'dateReceived' => $request->input('dateReceived'),
             'expired' => $request->input('expired'),
         ]);
 
@@ -122,6 +127,7 @@ class StaffController extends Controller
         $receive->reference = $request->input('receiveReference');
         $receive->product = $request->input('receiveProduct');
         $receive->quantity = $request->input('receiveQuantity');
+        $receive->dateReceived = $request->input('receiveDateReceived');
         $receive->expired = $request->input('receiveExpired');
         $receive->amount = $request->input('receiveAmount');
         $receive->supplier = $request->input('receiveSupplier');

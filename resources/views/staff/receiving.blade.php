@@ -48,6 +48,7 @@
                         <th>Reference</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
+                        <th>Date Received</th>
                         <th>Expiry Date</th>
                         <th>Amount</th>
                         <th>Supplier</th>
@@ -62,6 +63,7 @@
                             <td>{{$receive->reference}}</td>
                             <td>{{$receive->product}}</td>
                             <td>{{$receive->quantity}}</td>
+                            <td>{{ $receive->dateReceived->format('F j, Y') }}</td>
                             <td>{{ $receive->expired->format('F j, Y') }}</td>
                             <td>{{$receive->amount}}</td>
                             <td>{{$receive->supplier}}</td>
@@ -73,8 +75,10 @@
                                     data-receive-reference="{{ $receive->reference }}"
                                     data-receive-product="{{ $receive->product }}"
                                     data-receive-quantity="{{ $receive->quantity }}"
+                                    data-receive-dateReceived="{{ $receive->dateReceived }}"
                                     data-receive-expired="{{ $receive->expired }}"
                                     data-receive-amount="{{ $receive->amount }}"
+                                    data-receive-supplier="{{ $receive->supplier }}"
                                     >
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
@@ -118,8 +122,8 @@
                     @csrf
                     <div class="mb-3">
                         <label for="category" class="form-label">Supplier</label>
-                        <select id="category" name="supplier" class="form-control" required>
-                            <option value="">Select a supplier</option>
+                        <select id="category" name="supplier" class="form-control form-select" required>
+                            <option value="" disabled selected>Select a supplier</option>
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->supplier }}">{{ $supplier->supplier }}</option>
                             @endforeach
@@ -141,6 +145,12 @@
                         <label for="amount">Amount</label>
                         <input type="number" id="amount" name="amount" class="form-control">
                     </div>
+
+                    <div class="form-group">
+                        <label for="expiryDate">Date Receive</label>
+                        <input type="date" id="dateReceived" name="dateReceived" class="form-control">
+                    </div>
+
                     <div class="form-group">
                         <label for="expiryDate">Expiration Date</label>
                         <input type="date" id="expiryDate" name="expired" class="form-control">
@@ -157,7 +167,7 @@
         </div>
     </div>
 </div>
-
+receiveDateSupplier
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -171,7 +181,16 @@
                 <form action="{{route('staff.receive-update')}}" method="post">
                     @csrf
                     <input type="hidden" id="receiveId" name="receiveId">
-    
+                    
+                    <div class="mb-3">
+                        <label for="receiveSupplier" class="form-label">Supplier</label>
+                        <select id="receiveSupplier" name="receiveSupplier" class="form-control form-select" required>
+                            <option value="" disabled selected>Select a supplier</option>
+                            @foreach($suppliers as $supplier)
+                                <option value="{{ $supplier->supplier }}">{{ $supplier->supplier }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="mb-3">
                         <label>Reference</label>
                         <input type="text" class="form-control" id="receiveReference" name="receiveReference" required>
@@ -183,6 +202,10 @@
                     <div class="mb-3">
                         <label>Quantity</label>
                         <input type="number" class="form-control" id="receiveQuantity" name="receiveQuantity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Received</label>
+                        <input type="date" class="form-control" id="receiveDateReceived" name="receiveDateReceived" required>
                     </div>
                     <div class="mb-3">
                         <label>Expiry date</label>
@@ -243,6 +266,8 @@
             var receiveQuantity = button.getAttribute('data-receive-quantity');
             var receiveExpired = button.getAttribute('data-receive-expired');
             var receiveAmount = button.getAttribute('data-receive-amount');
+            var receiveDateReceived = button.getAttribute('data-receive-dateReceived');
+            var receiveSupplier = button.getAttribute('data-receive-supplier');
             
             // Populate the modal form fields with the data
             editModal.querySelector('#receiveId').value = receiveId;
@@ -251,6 +276,8 @@
             editModal.querySelector('#receiveQuantity').value = receiveQuantity;
             editModal.querySelector('#receiveExpired').value = receiveExpired;
             editModal.querySelector('#receiveAmount').value = receiveAmount;
+            editModal.querySelector('#receiveDateReceived').value = receiveDateReceived;
+            editModal.querySelector('#receiveSupplier').value = receiveSupplier;
 
         });
     });
@@ -286,6 +313,7 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('expiryDate').setAttribute('min', today);
+        document.getElementById('receiveExpired').setAttribute('min', today);
     });
 </script>
 

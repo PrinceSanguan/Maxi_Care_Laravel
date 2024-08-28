@@ -50,51 +50,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>1</td>
-                        <td>Loperamide 250mg</td>
-                        <td>500</td>
-                        <td>100</td>
-                        <td>0</td>
-                        <td>400</td>
-                        <td>300</td>
+                        @foreach($productNames as $index => $productName)
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $productName->product }}</td>
+                            <td>{{ $productName->quantity }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Biogesic 500mg</td>
-                        <td>500</td>
-                        <td>50</td>
-                        <td>0</td>
-                        <td>450</td>
-                        <td>300</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Arcoxia 60mg</td>
-                        <td>300</td>
-                        <td>210</td>
-                        <td>0</td>
-                        <td>90</td>
-                        <td>200</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Antiox 500mg</td>
-                        <td>300</td>
-                        <td>150</td>
-                        <td>0</td>
-                        <td>150</td>
-                        <td>200</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Amoxicillin 500mg</td>
-                        <td>700</td>
-                        <td>100</td>
-                        <td>0</td>
-                        <td>600</td>
-                        <td>500</td>
-                    </tr>
-                    <!-- Additional rows here -->
+                    @endforeach
                 </tbody>
             </table>
             <div class="pagination">

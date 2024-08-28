@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('reference');
             $table->string('product');
             $table->string('quantity');
+            $table->string('dateReceived');
             $table->datetime('expired');
             $table->string('amount');
             $table->string('supplier');

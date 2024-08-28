@@ -80,6 +80,11 @@ body {
     margin-top: 20px;
 }
 
+.form-table-container {
+    display: flex;
+    justify-content: space-between;
+}
+
 .supplier-form-section h2 {
     font-size: 22px;
     color: #003399;
@@ -91,8 +96,10 @@ body {
     padding: 20px;
     background-color: #f4f4f9;
     border-radius: 8px;
-    width: 50%;
-    margin-bottom: 20px;
+    width: 45%; /* Keep the width consistent */
+    height: 560px; /* Fixed height for the form */
+    overflow-y: auto; /* Scroll if content overflows */
+    margin-right: 20px;
 }
 
 .form-group {
@@ -110,6 +117,7 @@ body {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-bottom: 40px;
 }
 
 .form-buttons {
@@ -139,13 +147,18 @@ body {
 }
 
 .supplier-table-container {
-    overflow-x: auto;
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #f4f4f9;
+    border-radius: 8px;
+    width: 45%; /* Keep the width consistent */
+    height: 250px; /* Fixed height for the table */
+    overflow-y: auto; /* Scroll if content overflows */
 }
 
 .supplier-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
 .supplier-table th,
@@ -187,14 +200,13 @@ body {
 
 .footer {
     background-color: #e0e7ff;
-    text-align: center;
     padding: 10px;
     position: fixed;
     width: 100%;
     bottom: 0;
     left: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* Space between the logo and text */
     align-items: center;
 }
 
@@ -204,9 +216,15 @@ body {
 }
 
 .footer-logo img.small-logo {
-    width: 30px;
+    width: 200px;
     height: auto;
     margin-right: 10px;
+}
+
+.footer-text {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Align text to the right */
 }
 
 .footer p {

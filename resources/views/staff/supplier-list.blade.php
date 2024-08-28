@@ -25,69 +25,70 @@
 
         <section class="supplier-form-section">
             <h2>Supplier Form</h2>
-            <div class="form-container">
-
-                <form action="{{route('staff.supplier-form')}}" method="post">
-                    @csrf
-                    <div class="form-group">
-                        <label for="supplier-name">Supplier</label>
-                        <input type="text" id="supplier-name" name="supplier" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product">Product</label>
-                        <input type="text" id="product" name="product" required>
-                    </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="save-btn">Save</button>
-                        <button type="button" class="cancel-btn">Cancel</button>
-                    </div>
-                </form>
-
-            </div>
-
-            <h2>Supplier List</h2>
-            <div class="supplier-table-container">
-                <table class="supplier-table table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Supplier Info</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($supply as $index => $supplies)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $supplies->supplier }}, {{ $supplies->email }}, {{ $supplies->product }}</td>
-                            <td>
-                                <button class="action-btn edit-btn btn btn-primary" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#editModal"
-                                    data-supply-id="{{ $supplies->id }}"
-                                    data-supplier-name="{{ $supplies->supplier }}"
-                                    data-email="{{ $supplies->email }}"
-                                    data-product="{{ $supplies->product }}">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </button>
-                                <form action="{{ route('staff.delete-supplier', $supplies->id) }}" method="post" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this supplier?');">
-                                        <i class="fa-solid fa-trash"></i> Delete
+            <div class="form-table-container">
+                <div class="form-container">
+                    <form action="{{route('staff.supplier-form')}}" method="post">
+                        @csrf
+                        <div class="form-group">
+                            <label for="supplier-name">Supplier</label>
+                            <input type="text" id="supplier-name" name="supplier" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product">Product</label>
+                            <input type="text" id="product" name="product" required>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+        
+                <div class="supplier-table-container">
+                    <h2>Supplier List</h2>
+                    <table class="supplier-table table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Supplier Info</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($supply as $index => $supplies)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $supplies->supplier }}, {{ $supplies->email }}, {{ $supplies->product }}</td>
+                                <td>
+                                    <button class="action-btn edit-btn btn btn-primary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editModal"
+                                        data-supply-id="{{ $supplies->id }}"
+                                        data-supplier-name="{{ $supplies->supplier }}"
+                                        data-email="{{ $supplies->email }}"
+                                        data-product="{{ $supplies->product }}">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
                                     </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                    <form action="{{ route('staff.delete-supplier', $supplies->id) }}" method="post" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this supplier?');">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
+        
     </div>
 
 <!-- Edit Modal -->
