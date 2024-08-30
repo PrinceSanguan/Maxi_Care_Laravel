@@ -44,42 +44,18 @@
                         <th>Expired Date</th>
                         <th>Medicine Category</th>
                         <th>Quantity</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($receives as $index => $receive)
                     <tr>
-                        <td>1</td>
-                        <td>Loperamide 250mg</td>
-                        <td>July 20, 2024</td>
-                        <td>Generic</td>
-                        <td>100</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
+                        <td>{{$index + 1}}</td>
+                        <td>{{$receive->product}}</td>
+                        <td>{{ $receive->expired->format('F j, Y') }}</td>
+                        <td>{{$receive->productCategory}}</td>
+                        <td>{{$receive->amount}}</td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Biogesic 500mg</td>
-                        <td>July 3, 2024</td>
-                        <td>Branded</td>
-                        <td>50</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Arcoxia 60mg</td>
-                        <td>August 5, 2024</td>
-                        <td>Branded</td>
-                        <td>210</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Antiox 500mg</td>
-                        <td>July 25, 2024</td>
-                        <td>Branded</td>
-                        <td>150</td>
-                        <td><button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button></td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
             <div class="pagination">

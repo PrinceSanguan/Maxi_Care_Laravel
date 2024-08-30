@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
             $table->string('category');
-            $table->string('product');
-            $table->string('price');
+            $table->string('productName');
+            $table->string('productInformation');
+            $table->unsignedInteger('price');
+            $table->string('prescription')->nullable();
             $table->timestamps();
         });
     }

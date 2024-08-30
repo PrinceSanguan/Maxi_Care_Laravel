@@ -9,6 +9,7 @@ use App\Models\Medicine;
 use App\Models\Receive;
 use App\Models\Sales;
 use App\Models\Stock;
+use Carbon\Carbon; // Make sure to include Carbon for date handling
 
 class StaffController extends Controller
 {
@@ -121,25 +122,40 @@ class StaffController extends Controller
     {
         $suppliers = Supplier::all();
         $receives = Receive::all();
+        $productNames = Medicine::all();
 
-        return view ('staff.receiving', compact('suppliers', 'receives'));
+        return view ('staff.receiving', compact('suppliers', 'receives', 'productNames'));
     }
 
     public function receiveForm(Request $request)
     {
         $request->validate([
             'supplier' => 'required|string|max:255',
-            'product' => 'required|string|max:255|unique:receives,product',
+            'product' => 'required',
             'reference' => 'required|string|max:255|unique:receives,reference',
             'quantity' => 'required|integer|min:1',
             'amount' => 'required|numeric|min:0',
             'dateReceived' => 'required|date',
-            'expired' => 'required|date|after:today',
+            'expired' => 'required|date', // if in production copy this --> 'expired' => 'required|date|after:today', <--
             'stockType' => 'required|in:safetyStock,stockAvailable', // Ensure stockType is one of the allowed values
         ]);
     
         $stockType = $request->input('stockType');
         $quantity = $request->input('quantity');
+
+        // Find the product category in Medicine database based on input product in Receive Database
+        $productName = $request->input('product');
+        $productCategory = Medicine::where('productName', $productName)->first();
+
+        if ($productCategory) {
+            // Product found, you can access $productCategory attributes
+            $category = $productCategory->category; // Example of accessing a related attribute
+        } else {
+            // Handle the case where no product is found
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
+        
     
         // Set default values for safetyStock and stockAvailable
         $safetyStock = 0;
@@ -162,6 +178,7 @@ class StaffController extends Controller
             'stockAvailable' => $stockAvailable,
             'amount' => $request->input('amount'),
             'dateReceived' => $request->input('dateReceived'),
+            'productCategory' => $category,
             'expired' => $request->input('expired'),
         ]);
 
@@ -188,6 +205,20 @@ class StaffController extends Controller
 
     public function updateReceive(Request $request)
     {
+
+
+        // Find the product category in Medicine database based on input product in Receive Database
+        $productName = $request->input('receiveProduct');
+        $productCategory = Medicine::where('productName', $productName)->first();
+
+          if ($productCategory) {
+            // Product found, you can access $productCategory attributes
+            $category = $productCategory->category; // Example of accessing a related attribute
+        } else {
+            // Handle the case where no product is found
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
         $receive = Receive::find($request->input('receiveId'));
         $receive->reference = $request->input('receiveReference');
         $receive->product = $request->input('receiveProduct');
@@ -196,6 +227,7 @@ class StaffController extends Controller
         $receive->expired = $request->input('receiveExpired');
         $receive->amount = $request->input('receiveAmount');
         $receive->supplier = $request->input('receiveSupplier');
+        $receive->productCategory = $category;
         
         $receive->save();
 
@@ -301,24 +333,29 @@ class StaffController extends Controller
         // Validate the request data with custom error messages
         $request->validate([
             'category' => 'required',
-            'product' => 'required',
-            'price' => 'required'
+            'productName' => 'required',
+            'productInformation' => 'required',
+            'price' => 'required',
         ]);
-
+    
+        // Get the prescription input or default to 'off' if null
+        $prescription = $request->input('prescription', 'off');
+    
         // Saving in the database
         $medicine = Medicine::create([
             'category' => $request->input('category'),
-            'product' => $request->input('product'),
+            'productName' => $request->input('productName'),
+            'productInformation' => $request->input('productInformation'),
+            'prescription' => $prescription,
             'price' => $request->input('price'),
         ]);
-
+    
         if (!$medicine) {
             return redirect()->route('staff.product-list')->with('error', 'Failed to create medicine.');
         }
     
         // Redirect with success message
         return redirect()->route('staff.product-list')->with('success', 'You have successfully added a medicine!');
-
     }
 
     public function updateMedicine(Request $request)
@@ -346,8 +383,11 @@ class StaffController extends Controller
 
     public function expiredList()
     {
+
+       // Fetch records where the expiration date is less than or equal to today's date and time
+        $receives = Receive::where('expired', '<=', Carbon::now()->endOfDay())->get();
         
-        return view ('staff.expired-list');
+        return view ('staff.expired-list', compact('receives'));
     }
 
     public function supplierList()

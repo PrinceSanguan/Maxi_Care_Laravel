@@ -41,11 +41,14 @@
                         </select>
                     </div>
 
+                    <label for="product-info">Product Name</label>
+                    <input type="text" name="productName" required>
+
                     <label for="product-info">Product Information</label>
-                    <input type="text" id="product-info" name="product" required>
+                    <input type="text" name="productInformation" required>
 
                     <label for="price">Price</label>
-                    <input type="number" id="price" name="price" required>
+                    <input type="number" id="price" name="price" required min="1">
 
                     <label for="prescription">Medicine requires Prescription</label>
                     <input type="checkbox" id="prescription" name="prescription">
@@ -82,6 +85,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Product Name</th>
                             <th>Product Information</th>
                             <th>Category</th>
                             <th>Price</th>
@@ -92,7 +96,13 @@
                         @foreach($medicine as $index => $medicines)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $medicines->product }}</td>
+                            <td>
+                                {{ $medicines->productName }} <br>
+                                @if($medicines->prescription === 'on')
+                                    (Prescription Required)
+                                @endif
+                            </td>
+                            <td>{{ $medicines->productInformation }}</td>
                             <td>{{ $medicines->category }}</td>
                             <td>{{ $medicines->price }}</td>
                             <td>

@@ -129,9 +129,14 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="productName">Product Name</label>
-                        <input type="text" id="productName" name="product" class="form-control">
+                    <div class="mb-3">
+                        <label>Product Name</label>
+                        <select id="product" name="product" class="form-control form-select" required>
+                            <option value="" disabled selected>Select a product</option>
+                            @foreach($productNames as $productName)
+                                <option value="{{ $productName->productName }}">{{ $productName->productName }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="reference">Reference Number</label>
@@ -211,8 +216,13 @@
                         <input type="number" class="form-control" id="receiveReference" name="receiveReference" readonly>
                     </div>
                     <div class="mb-3">
-                        <label>Product name</label>
-                        <input type="text" class="form-control" id="receiveProduct" name="receiveProduct" required>
+                        <label>Product Name</label>
+                        <select id="receiveProduct" name="receiveProduct" class="form-control form-select" required>
+                            <option value="" disabled selected>Select a Product</option>
+                            @foreach($productNames as $productName)
+                                <option value="{{ $productName->productName }}">{{ $productName->productName }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label>Quantity</label>

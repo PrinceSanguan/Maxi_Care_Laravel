@@ -11,7 +11,9 @@ class Medicine extends Model
 
     protected $fillable = [
         'category',
-        'product',
+        'productName',
+        'productInformation',
         'price',
+        'prescription',
     ];
 }

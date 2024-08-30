@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('dateReceived');
             $table->datetime('expired');
             $table->string('amount');
+            $table->string('productCategory');
             $table->string('supplier');
             $table->timestamps();
         });

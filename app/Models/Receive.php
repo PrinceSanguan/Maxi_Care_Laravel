@@ -18,6 +18,7 @@ class Receive extends Model
         'stockAvailable',
         'amount',
         'expired',
+        'productCategory',
         'dateReceived',
     ];
 
