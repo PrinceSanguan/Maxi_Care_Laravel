@@ -135,25 +135,43 @@
                     </div>
                     <div class="form-group">
                         <label for="reference">Reference Number</label>
-                        <input type="text" id="reference" name="reference" class="form-control">
+                        <input type="number" id="reference" name="reference" class="form-control" required min="1">
                     </div>
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" class="form-control">
+                        <input type="number" id="quantity" name="quantity" class="form-control" required min="1">
                     </div>
+
+                    <!-- New Radio Buttons for Stock Type -->
+                    <div class="form-check">
+                        <label class="form-label">Stock Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="safetyStock" name="stockType" value="safetyStock" required>
+                            <label class="form-check-label" for="safetyStock">
+                                Safety Stock
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="stockAvailable" name="stockType" value="stockAvailable" required>
+                            <label class="form-check-label" for="stockAvailable">
+                                Stock Available
+                            </label>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="amount">Amount</label>
-                        <input type="number" id="amount" name="amount" class="form-control">
+                        <input type="number" id="amount" name="amount" class="form-control" required min="1">
                     </div>
 
                     <div class="form-group">
                         <label for="expiryDate">Date Receive</label>
-                        <input type="date" id="dateReceived" name="dateReceived" class="form-control">
+                        <input type="date" id="dateReceived" name="dateReceived" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                         <label for="expiryDate">Expiration Date</label>
-                        <input type="date" id="expiryDate" name="expired" class="form-control">
+                        <input type="date" id="expiryDate" name="expired" class="form-control" required>
                     </div>
                 
                     <div class="modal-footer">
@@ -162,19 +180,16 @@
                     </div>
                 </form>
             </div>
-            
-            
         </div>
     </div>
 </div>
-receiveDateSupplier
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Supplier</h5>
+                <h5 class="modal-title" id="editModalLabel">Edit Receiving</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -193,7 +208,7 @@ receiveDateSupplier
                     </div>
                     <div class="mb-3">
                         <label>Reference</label>
-                        <input type="text" class="form-control" id="receiveReference" name="receiveReference" required>
+                        <input type="number" class="form-control" id="receiveReference" name="receiveReference" readonly>
                     </div>
                     <div class="mb-3">
                         <label>Product name</label>
@@ -213,7 +228,7 @@ receiveDateSupplier
                     </div>
                     <div class="mb-3">
                         <label>Amount</label>
-                        <input type="text" class="form-control" id="receiveAmount" name="receiveAmount" required>
+                        <input type="text" class="form-control" id="receiveAmount" name="receiveAmount" readonly>
                     </div>
     
                     <div class="modal-footer">
@@ -286,27 +301,43 @@ receiveDateSupplier
     <!----Sweet Alert---->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    @if(session('success'))
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: '{{ session('success') }}',
-                    confirmButtonText: 'OK'
-                });
-            @endif
-    
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: '{{ session('error') }}',
-                    confirmButtonText: 'Try Again'
-                });
-            @endif
+        Swal.fire({
+            icon: 'success',
+            title: '{{ session('success') }}',
+            showConfirmButton: true
         });
-    </script> 
+    </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+                showConfirmButton: true
+            });
+        </script>
+    @endif
+
+    @if($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Errors',
+                html: `
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+                showConfirmButton: true
+            });
+        </script>
+    @endif
 
 <script>
     // JavaScript to set the minimum date for the expiration date input

@@ -49,15 +49,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($stocks as $index => $stock)
                     <tr>
-                        @foreach($productNames as $index => $productName)
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $productName->product }}</td>
-                            <td>{{ $productName->quantity }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{$stock->productName}}</td>
+                        <td>{{$stock->stockIn}}</td>
+                        <td>{{$stock->stockOut}}</td>
+                        <td>{{$stock->expired}}</td>
+                        <td>{{$stock->stockAvailable}}</td>
+                        <td>{{$stock->safetyStock}}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -45,7 +45,10 @@
                         <th>#</th>
                         <th>Date</th>
                         <th>Reference #</th>
-                        <th>Amount</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Amount</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -55,6 +58,9 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{$sale->created_at->format('F j, Y') }}</td>
                         <td>{{$sale->reference}}</td>
+                        <td>{{$sale->productName}}</td>
+                        <td>{{$sale->quantity}}</td>
+                        <td>{{$sale->price}}</td>
                         <td>{{$sale->amount}}</td>
                         <td>
                             <button class="action-btn edit-btn btn btn-primary" 
@@ -62,7 +68,9 @@
                                     data-bs-target="#editModal"
                                     data-sales-id="{{ $sale->id }}"
                                     data-sales-reference="{{ $sale->reference }}"
-                                    data-sales-amount="{{ $sale->amount }}"
+                                    data-sales-productName="{{ $sale->productName }}"
+                                    data-sales-quantity="{{ $sale->quantity }}"
+                                    data-sales-price="{{ $sale->price }}"
                                     >
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
@@ -105,21 +113,32 @@
                 <form method="post" action="{{route('staff.new-sales')}}">
                     @csrf
                     <div class="form-group">
-                        <label>Reference</label>
-                        <input type="number" name="reference" class="form-control" required>
+                      <label>Reference</label>
+                      <input type="number" name="reference" class="form-control" required min="1">
                     </div>
 
-
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <select id="productName" name="productName" class="form-control form-select" required>
+                            <option value="" disabled selected>Select a Product</option>
+                            @foreach($stocks as $stock)
+                                <option value="{{ $stock->productName }}">{{ $stock->productName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                  
                     <div class="form-group">
-                        <label>Amount</label>
-                        <input type="number" name="amount" class="form-control" required>
-                    </div>
-                
+                      <label>Quantity</label>   
+                  
+                      <input type="number" name="quantity" class="form-control" required min="1"> </div>
+                  
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>   
+                  
+                      <button type="submit" class="btn btn-primary">Save</button>   
+                  
                     </div>
-                </form>
+                  </form>
             </div>
             
         </div>
@@ -141,12 +160,22 @@
     
                     <div class="mb-3">
                         <label>Reference</label>
-                        <input type="text" class="form-control" id="salesReference" name="salesReference" required>
+                        <input type="number" class="form-control" id="salesReference" name="salesReference" required min="1">
                     </div>
                     <div class="mb-3">
-                        <label>Amount</label>
-                        <input type="text" class="form-control" id="salesAmount" name="salesAmount" required>
+                        <label>Product Name</label>
+                        <input type="text" class="form-control" id="salesProductName" name="salesProductName" required>
                     </div>
+                    <div class="mb-3">
+                        <label>Quantity</label>
+                        <input type="number" class="form-control" id="salesQuantity" name="salesQuantity" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label>Price</label>
+                        <input type="number" class="form-control" id="salesPrice" name="salesPrice" required min="1">
+                    </div>
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -220,13 +249,20 @@
             // Extract data-* attributes from the button
             var salesId = button.getAttribute('data-sales-id');
             var salesReference = button.getAttribute('data-sales-reference');
-            var salesAmount = button.getAttribute('data-sales-amount');
+            var salesProductName = button.getAttribute('data-sales-productName');
+            var salesQuantity = button.getAttribute('data-sales-quantity');
+            var salesPrice = button.getAttribute('data-sales-price');
+
+
 
             
             // Populate the modal form fields with the data
             editModal.querySelector('#salesId').value = salesId;
             editModal.querySelector('#salesReference').value = salesReference;
-            editModal.querySelector('#salesAmount').value = salesAmount;
+            editModal.querySelector('#salesProductName').value = salesProductName;
+            editModal.querySelector('#salesQuantity').value = salesQuantity;
+            editModal.querySelector('#salesPrice').value = salesPrice;
+
 
         });
     });

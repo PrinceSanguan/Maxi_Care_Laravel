@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('receives', function (Blueprint $table) {
             $table->id();
-            $table->string('reference');
+            $table->string('reference')->unique();
             $table->string('product');
             $table->string('quantity');
+            $table->string('safetyStock')->nullable();
+            $table->string('stockAvailable')->nullable();
             $table->string('dateReceived');
             $table->datetime('expired');
             $table->string('amount');

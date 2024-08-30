@@ -31,6 +31,14 @@ return new class extends Migration
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'username' => 'staff',
+                'email' => 'staff@gmail.com',
+                'userRole' => 'staff',
+                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 

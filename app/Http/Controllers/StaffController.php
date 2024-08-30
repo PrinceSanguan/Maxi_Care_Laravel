@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Medicine;
 use App\Models\Receive;
 use App\Models\Sales;
+use App\Models\Stock;
 
 class StaffController extends Controller
 {
@@ -23,46 +24,81 @@ class StaffController extends Controller
     }
 
     public function stock() {
-        // Fetch the product name and quantity from the Receiving model
-        $productNames = Receive::select('product', 'quantity')->get();
     
+        // get the information from the table Stock
+        $stocks = Stock::all();
+
         // Pass the product name to the view
-        return view('staff.stock', compact('productNames'));
+        return view('staff.stock', compact('stocks'));
     }
 
     public function sales()
     {
+        // Fetch all sales records
         $sales = Sales::all();
-        return view ('staff.sales', compact('sales'));
+
+        // Fetch records from the Stock table where quantity is greater than 0
+        $stocks = Stock::where('stockAvailable', '>', 0)->get();
+
+        // Pass both sales and receives data to the view
+        return view('staff.sales', compact('sales', 'stocks'));
     }
 
     public function newSales(Request $request)
     {
+        // Validate the request input
         $request->validate([
-            'reference' => 'required|string|max:255',  
-            'amount' => 'required|integer|min:1', 
+            'reference' => 'required|string|max:255',
+            'productName' => 'required|string|max:255', // Ensure this is a string
+            'quantity' => 'required|integer|min:1',
         ]);
-
-        
-        // Saving in the database
+    
+        // Get the product amount from the Receive database using productName
+        $receive = Receive::where('product', $request->input('productName'))->first();
+    
+        if (!$receive) {
+            return redirect()->route('staff.sales')->with('error', 'Product not found in Receive records.');
+        }
+    
+        $price = $receive->amount; // Price fetched from the Receive model
+        $totalAmount = $price * $request->input('quantity'); // Calculate total amount for the sale
+    
+        // Create a new sales record
         $sales = Sales::create([
             'reference' => $request->input('reference'),
-            'amount' => $request->input('amount'),
+            'productName' => $request->input('productName'),
+            'quantity' => $request->input('quantity'),
+            'price' => $price, // Use the price fetched from the Receive model
+            'amount' => $totalAmount,
         ]);
-
+    
+        // Update the stock based on the product name
+        $stock = Stock::where('productName', $request->input('productName'))->first();
+    
+        if ($stock) {
+            $stock->stockOut += $request->input('quantity'); // Increment stockOut
+            $stock->stockAvailable -= $request->input('quantity'); // Decrement stockAvailable
+            $stock->save();
+        } else {
+            return redirect()->route('staff.sales')->with('error', 'Stock record not found.');
+        }
+    
         if (!$sales) {
-            return redirect()->route('staff.sales')->with('error', 'Failed to create a sales.');
+            return redirect()->route('staff.sales')->with('error', 'Failed to create a sale.');
         }
     
         // Redirect with success message
-        return redirect()->route('staff.sales')->with('success', 'You have successfully create a sales');
+        return redirect()->route('staff.sales')->with('success', 'Sale successfully created.');
     }
 
     public function updateSales(Request $request)
     {
         $sales = Sales::find($request->input('salesId'));
         $sales->reference = $request->input('salesReference');
-        $sales->amount = $request->input('salesAmount');
+        $sales->productName = $request->input('salesProductName');
+        $sales->quantity = $request->input('salesQuantity');
+        $sales->price = $request->input('salesPrice');
+        $sales->amount = $request->input('salesPrice') * $request->input('salesQuantity');
         
         $sales->save();
 
@@ -92,33 +128,62 @@ class StaffController extends Controller
     public function receiveForm(Request $request)
     {
         $request->validate([
-            'supplier' => 'required|string|max:255',   // Ensure supplier is a string and not too long
-            'product' => 'required|string|max:255',    // Ensure product is a string and not too long
-            'reference' => 'required|string|max:255', // Ensure reference is unique in the 'receives' table
-            'quantity' => 'required|integer|min:1',    // Ensure quantity is an integer and greater than or equal to 1
-            'amount' => 'required|numeric|min:0',      // Ensure amount is a number and not negative
+            'supplier' => 'required|string|max:255',
+            'product' => 'required|string|max:255|unique:receives,product',
+            'reference' => 'required|string|max:255|unique:receives,reference',
+            'quantity' => 'required|integer|min:1',
+            'amount' => 'required|numeric|min:0',
             'dateReceived' => 'required|date',
-            'expired' => 'required|date|after:today',  // Ensure expired is a valid date and after today
+            'expired' => 'required|date|after:today',
+            'stockType' => 'required|in:safetyStock,stockAvailable', // Ensure stockType is one of the allowed values
         ]);
-
+    
+        $stockType = $request->input('stockType');
+        $quantity = $request->input('quantity');
+    
+        // Set default values for safetyStock and stockAvailable
+        $safetyStock = 0;
+        $stockAvailable = 0;
+    
+        // Assign quantity to the relevant stock type
+        if ($stockType === 'safetyStock') {
+            $safetyStock = $quantity;
+        } elseif ($stockType === 'stockAvailable') {
+            $stockAvailable = $quantity;
+        }
+    
         // Saving in the database
         $receive = Receive::create([
             'supplier' => $request->input('supplier'),
             'product' => $request->input('product'),
             'reference' => $request->input('reference'),
-            'quantity' => $request->input('quantity'),
+            'quantity' => $quantity,
+            'safetyStock' => $safetyStock,
+            'stockAvailable' => $stockAvailable,
             'amount' => $request->input('amount'),
             'dateReceived' => $request->input('dateReceived'),
             'expired' => $request->input('expired'),
         ]);
 
+        // Saving in the Stock Database
+        Stock::create([
+            'productName' => $request->input('product'),
+            'reference' => $request->input('reference'),
+            'stockIn' => $quantity,
+            'stockOut' => 0,
+            'expired' => 0,
+            'stockAvailable' => $stockAvailable,
+            'safetyStock' => $safetyStock,
+        ]);
+        
+
+    
         if (!$receive) {
             return redirect()->route('staff.receiving')->with('error', 'Failed to receive a product.');
         }
     
         // Redirect with success message
-        return redirect()->route('staff.receiving')->with('success', 'You have successfully receive a product');
-
+        return redirect()->route('staff.receiving')->with('success', 'You have successfully received a product.');
     }
 
     public function updateReceive(Request $request)
@@ -133,6 +198,21 @@ class StaffController extends Controller
         $receive->supplier = $request->input('receiveSupplier');
         
         $receive->save();
+
+
+    // Find the Stock record reference
+    $stock = Stock::where('reference', $request->input('receiveReference'))->first();
+
+
+        if (!$stock) {
+            return redirect()->back()->with('error', 'Stock record not found');
+        }
+
+        // update the stock!
+    
+        $stock->productName = $request->input('receiveProduct');
+        $stock->stockIn = $request->input('receiveQuantity');
+        $stock->save();
 
         return redirect()->back()->with('success', 'Updated successfully');
     }

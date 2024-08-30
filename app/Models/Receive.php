@@ -14,6 +14,8 @@ class Receive extends Model
         'product',
         'reference',
         'quantity',
+        'safetyStock',
+        'stockAvailable',
         'amount',
         'expired',
         'dateReceived',
