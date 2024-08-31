@@ -77,7 +77,6 @@
                                     data-receive-quantity="{{ $receive->quantity }}"
                                     data-receive-dateReceived="{{ $receive->dateReceived }}"
                                     data-receive-expired="{{ $receive->expired }}"
-                                    data-receive-amount="{{ $receive->amount }}"
                                     data-receive-supplier="{{ $receive->supplier }}"
                                     >
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -139,10 +138,6 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="reference">Reference Number</label>
-                        <input type="number" id="reference" name="reference" class="form-control" required min="1">
-                    </div>
-                    <div class="form-group">
                         <label for="quantity">Quantity</label>
                         <input type="number" id="quantity" name="quantity" class="form-control" required min="1">
                     </div>
@@ -162,11 +157,6 @@
                                 Stock Available
                             </label>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="amount">Amount</label>
-                        <input type="number" id="amount" name="amount" class="form-control" required min="1">
                     </div>
 
                     <div class="form-group">
@@ -236,11 +226,7 @@
                         <label>Expiry date</label>
                         <input type="date" class="form-control" id="receiveExpired" name="receiveExpired" required>
                     </div>
-                    <div class="mb-3">
-                        <label>Amount</label>
-                        <input type="text" class="form-control" id="receiveAmount" name="receiveAmount" readonly>
-                    </div>
-    
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -290,7 +276,6 @@
             var receiveProduct = button.getAttribute('data-receive-product');
             var receiveQuantity = button.getAttribute('data-receive-quantity');
             var receiveExpired = button.getAttribute('data-receive-expired');
-            var receiveAmount = button.getAttribute('data-receive-amount');
             var receiveDateReceived = button.getAttribute('data-receive-dateReceived');
             var receiveSupplier = button.getAttribute('data-receive-supplier');
             
@@ -300,7 +285,6 @@
             editModal.querySelector('#receiveProduct').value = receiveProduct;
             editModal.querySelector('#receiveQuantity').value = receiveQuantity;
             editModal.querySelector('#receiveExpired').value = receiveExpired;
-            editModal.querySelector('#receiveAmount').value = receiveAmount;
             editModal.querySelector('#receiveDateReceived').value = receiveDateReceived;
             editModal.querySelector('#receiveSupplier').value = receiveSupplier;
 

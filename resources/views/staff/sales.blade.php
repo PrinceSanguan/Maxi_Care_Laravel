@@ -63,24 +63,13 @@
                         <td>{{$sale->price}}</td>
                         <td>{{$sale->amount}}</td>
                         <td>
-                            <button class="action-btn edit-btn btn btn-primary" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#editModal"
-                                    data-sales-id="{{ $sale->id }}"
-                                    data-sales-reference="{{ $sale->reference }}"
-                                    data-sales-productName="{{ $sale->productName }}"
-                                    data-sales-quantity="{{ $sale->quantity }}"
-                                    data-sales-price="{{ $sale->price }}"
-                                    >
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                            <form action="{{ route('staff.delete-sales', $sale->id) }}" method="post" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this sales?');">
+                                    <i class="fa-solid fa-trash"></i> Delete
                                 </button>
-                                <form action="{{ route('staff.delete-sales', $sale->id) }}" method="post" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this sales?');">
-                                        <i class="fa-solid fa-trash"></i> Delete
-                                    </button>
-                                </form>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -112,10 +101,6 @@
 
                 <form method="post" action="{{route('staff.new-sales')}}">
                     @csrf
-                    <div class="form-group">
-                      <label>Reference</label>
-                      <input type="number" name="reference" class="form-control" required min="1">
-                    </div>
 
                     <div class="mb-3">
                         <label for="productName" class="form-label">Product Name</label>
@@ -144,48 +129,6 @@
         </div>
     </div>
 </div>
-
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Sales</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{route('staff.update-sales')}}" method="post">
-                    @csrf
-                    <input type="hidden" id="salesId" name="salesId">
-    
-                    <div class="mb-3">
-                        <label>Reference</label>
-                        <input type="number" class="form-control" id="salesReference" name="salesReference" required min="1">
-                    </div>
-                    <div class="mb-3">
-                        <label>Product Name</label>
-                        <input type="text" class="form-control" id="salesProductName" name="salesProductName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Quantity</label>
-                        <input type="number" class="form-control" id="salesQuantity" name="salesQuantity" required min="1">
-                    </div>
-                    <div class="mb-3">
-                        <label>Price</label>
-                        <input type="number" class="form-control" id="salesPrice" name="salesPrice" required min="1">
-                    </div>
-
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 
     
     @include('staff.footer')
@@ -238,35 +181,6 @@
                 @endif
             });
         </script> 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var editModal = document.getElementById('editModal');
-        
-        editModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; // Button that triggered the modal
-            
-            // Extract data-* attributes from the button
-            var salesId = button.getAttribute('data-sales-id');
-            var salesReference = button.getAttribute('data-sales-reference');
-            var salesProductName = button.getAttribute('data-sales-productName');
-            var salesQuantity = button.getAttribute('data-sales-quantity');
-            var salesPrice = button.getAttribute('data-sales-price');
-
-
-
-            
-            // Populate the modal form fields with the data
-            editModal.querySelector('#salesId').value = salesId;
-            editModal.querySelector('#salesReference').value = salesReference;
-            editModal.querySelector('#salesProductName').value = salesProductName;
-            editModal.querySelector('#salesQuantity').value = salesQuantity;
-            editModal.querySelector('#salesPrice').value = salesPrice;
-
-
-        });
-    });
-</script>
 
 </body>
 </html>

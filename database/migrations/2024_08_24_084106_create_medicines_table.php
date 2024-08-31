@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,9 +18,57 @@ return new class extends Migration
             $table->string('productName');
             $table->string('productInformation');
             $table->unsignedInteger('price');
-            $table->string('prescription')->nullable();
+            $table->string('prescription');
             $table->timestamps();
         });
+
+        DB::table('medicines')->insert([
+            [
+                'category' => 'Generic',
+                'productName' => 'Paracetamol',
+                'productInformation' => 'Pain reliever and fever reducer',
+                'price' => 5,
+                'prescription' => 'on',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'Branded',
+                'productName' => 'Ibuprofen',
+                'productInformation' => 'Nonsteroidal anti-inflammatory drug',
+                'price' => 7,
+                'prescription' => 'on',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'Ritemed',
+                'productName' => 'Aspirin',
+                'productInformation' => 'Pain reliever, fever reducer, and blood thinner',
+                'price' => 6,
+                'prescription' => 'on',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'Generic',
+                'productName' => 'Amoxicillin',
+                'productInformation' => 'Antibiotic for bacterial infections',
+                'price' => 10,
+                'prescription' => 'off',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'Cosmetics',
+                'productName' => 'Azithromycin',
+                'productInformation' => 'Antibiotic for bacterial infections',
+                'price' => 15,
+                'prescription' => 'on',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 
     /**

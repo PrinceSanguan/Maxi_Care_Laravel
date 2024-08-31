@@ -10,6 +10,7 @@ use App\Models\Receive;
 use App\Models\Sales;
 use App\Models\Stock;
 use Carbon\Carbon; // Make sure to include Carbon for date handling
+use Illuminate\Support\Facades\DB;
 
 class StaffController extends Controller
 {
@@ -21,7 +22,21 @@ class StaffController extends Controller
 
     public function index()
     {
-        return view ('staff.home');
+        // Fetch the total sales amount for the current day
+        $salesToday = Sales::whereDate('created_at', Carbon::today())
+            ->sum('amount');
+    
+        // Fetch the total sales amount for the current month
+        $salesMonth = Sales::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('amount');
+    
+        // Format the date and month
+        $todayDate = Carbon::today()->format('m-d-Y'); // e.g., 06-24-2024
+        $currentMonth = Carbon::now()->format('F'); // e.g., June
+    
+        // Pass the formatted date and month to the view
+        return view('staff.home', compact('salesToday', 'salesMonth', 'todayDate', 'currentMonth'));
     }
 
     public function stock() {
@@ -49,14 +64,16 @@ class StaffController extends Controller
     {
         // Validate the request input
         $request->validate([
-            'reference' => 'required|string|max:255',
-            'productName' => 'required|string|max:255', // Ensure this is a string
+            'productName' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
         ]);
     
+        // Generate the reference number
+        $reference = $this->generateReferenceNumber();
+    
         // Get the product amount from the Receive database using productName
         $receive = Receive::where('product', $request->input('productName'))->first();
-    
+        
         if (!$receive) {
             return redirect()->route('staff.sales')->with('error', 'Product not found in Receive records.');
         }
@@ -64,46 +81,49 @@ class StaffController extends Controller
         $price = $receive->amount; // Price fetched from the Receive model
         $totalAmount = $price * $request->input('quantity'); // Calculate total amount for the sale
     
-        // Create a new sales record
-        $sales = Sales::create([
-            'reference' => $request->input('reference'),
-            'productName' => $request->input('productName'),
-            'quantity' => $request->input('quantity'),
-            'price' => $price, // Use the price fetched from the Receive model
-            'amount' => $totalAmount,
-        ]);
+        // Start a transaction to ensure atomicity
+        DB::beginTransaction();
     
-        // Update the stock based on the product name
-        $stock = Stock::where('productName', $request->input('productName'))->first();
+        try {
+            // Create a new sales record
+            $sales = Sales::create([
+                'reference' => $reference,
+                'productName' => $request->input('productName'),
+                'quantity' => $request->input('quantity'),
+                'price' => $price, // Use the price fetched from the Receive model
+                'amount' => $totalAmount,
+            ]);
     
-        if ($stock) {
-            $stock->stockOut += $request->input('quantity'); // Increment stockOut
-            $stock->stockAvailable -= $request->input('quantity'); // Decrement stockAvailable
-            $stock->save();
-        } else {
-            return redirect()->route('staff.sales')->with('error', 'Stock record not found.');
-        }
+            // Update the stock based on the name of product
+            $stock = Stock::where('productName', $request->input('productName'))->first();
+            
+            if ($stock) {
+                if ($stock->stockAvailable < $request->input('quantity')) {
+                    // Rollback transaction and return an error if not enough stock is available
+                    DB::rollBack();
+                    return redirect()->route('staff.sales')->with('error', 'Not enough stock available.');
+                }
     
-        if (!$sales) {
-            return redirect()->route('staff.sales')->with('error', 'Failed to create a sale.');
+                $stock->stockOut += $request->input('quantity'); // Increment stockOut
+                $stock->stockAvailable -= $request->input('quantity'); // Decrement stockAvailable
+                $stock->save();
+            } else {
+                // Rollback transaction and return an error if no stock record is found
+                DB::rollBack();
+                return redirect()->route('staff.sales')->with('error', 'Stock record not found.');
+            }
+    
+            // Commit the transaction
+            DB::commit();
+    
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of any exception
+            DB::rollBack();
+            return redirect()->route('staff.sales')->with('error', 'Failed to create a sale: ' . $e->getMessage());
         }
     
         // Redirect with success message
         return redirect()->route('staff.sales')->with('success', 'Sale successfully created.');
-    }
-
-    public function updateSales(Request $request)
-    {
-        $sales = Sales::find($request->input('salesId'));
-        $sales->reference = $request->input('salesReference');
-        $sales->productName = $request->input('salesProductName');
-        $sales->quantity = $request->input('salesQuantity');
-        $sales->price = $request->input('salesPrice');
-        $sales->amount = $request->input('salesPrice') * $request->input('salesQuantity');
-        
-        $sales->save();
-
-        return redirect()->back()->with('success', 'Updated successfully');
     }
 
     public function deleteSales($id)
@@ -120,80 +140,79 @@ class StaffController extends Controller
 
     public function receiving()
     {
+        // Fetch suppliers and product names
         $suppliers = Supplier::all();
-        $receives = Receive::all();
         $productNames = Medicine::all();
-
-        return view ('staff.receiving', compact('suppliers', 'receives', 'productNames'));
+    
+        // Fetch records where the expiration date is greater than today's date
+        $receives = Receive::where('expired', '>', Carbon::now())->get();
+    
+        // Return view with the filtered receives
+        return view('staff.receiving', compact('suppliers', 'receives', 'productNames'));
     }
 
     public function receiveForm(Request $request)
     {
+        // Validate the request input
         $request->validate([
             'supplier' => 'required|string|max:255',
             'product' => 'required',
-            'reference' => 'required|string|max:255|unique:receives,reference',
             'quantity' => 'required|integer|min:1',
-            'amount' => 'required|numeric|min:0',
             'dateReceived' => 'required|date',
-            'expired' => 'required|date', // if in production copy this --> 'expired' => 'required|date|after:today', <--
-            'stockType' => 'required|in:safetyStock,stockAvailable', // Ensure stockType is one of the allowed values
+            'expired' => 'required|date', // If in production, you can use 'expired' => 'required|date|after:today'
+            'stockType' => 'required|in:safetyStock,stockAvailable',
         ]);
     
-        $stockType = $request->input('stockType');
-        $quantity = $request->input('quantity');
-
-        // Find the product category in Medicine database based on input product in Receive Database
+        // Find the product category in Medicine database based on input product
         $productName = $request->input('product');
         $productCategory = Medicine::where('productName', $productName)->first();
-
+    
         if ($productCategory) {
-            // Product found, you can access $productCategory attributes
-            $category = $productCategory->category; // Example of accessing a related attribute
+            $category = $productCategory->category;
+            $price = $productCategory->price;
         } else {
-            // Handle the case where no product is found
             return redirect()->back()->with('error', 'Product not found.');
         }
-
-        
     
-        // Set default values for safetyStock and stockAvailable
+        // Generate the reference number
+        $reference = $this->generateReferenceNumber();
+    
+        // Determine stock quantities
+        $stockType = $request->input('stockType');
+        $quantity = $request->input('quantity');
         $safetyStock = 0;
         $stockAvailable = 0;
     
-        // Assign quantity to the relevant stock type
         if ($stockType === 'safetyStock') {
             $safetyStock = $quantity;
         } elseif ($stockType === 'stockAvailable') {
             $stockAvailable = $quantity;
         }
     
-        // Saving in the database
+        // Save to Receive database
         $receive = Receive::create([
             'supplier' => $request->input('supplier'),
-            'product' => $request->input('product'),
-            'reference' => $request->input('reference'),
+            'product' => $productName,
+            'reference' => $reference,
             'quantity' => $quantity,
             'safetyStock' => $safetyStock,
             'stockAvailable' => $stockAvailable,
-            'amount' => $request->input('amount'),
+            'amount' => $price,
             'dateReceived' => $request->input('dateReceived'),
             'productCategory' => $category,
             'expired' => $request->input('expired'),
         ]);
-
-        // Saving in the Stock Database
+    
+        // Save to Stock database
         Stock::create([
-            'productName' => $request->input('product'),
-            'reference' => $request->input('reference'),
+            'productName' => $productName,
+            'reference' => $reference,
             'stockIn' => $quantity,
             'stockOut' => 0,
             'expired' => 0,
             'stockAvailable' => $stockAvailable,
             'safetyStock' => $safetyStock,
         ]);
-        
-
     
         if (!$receive) {
             return redirect()->route('staff.receiving')->with('error', 'Failed to receive a product.');
@@ -202,7 +221,29 @@ class StaffController extends Controller
         // Redirect with success message
         return redirect()->route('staff.receiving')->with('success', 'You have successfully received a product.');
     }
-
+    
+    private function generateReferenceNumber()
+    {
+        // Get today's date in MMDDYYYY format
+        $today = Carbon::now()->format('mdY');
+        
+        // Find the highest reference number for today
+        $latestReference = Receive::whereRaw('SUBSTR(reference, 1, 8) = ?', [$today])
+                                   ->orderBy('reference', 'desc')
+                                   ->first();
+        
+        if ($latestReference) {
+            // Extract the numeric part and increment
+            $lastNumber = intval(substr($latestReference->reference, 8));
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            // Start with 001 if no records exist for today
+            $newNumber = '001';
+        }
+    
+        return $today . $newNumber;
+    }
+    
     public function updateReceive(Request $request)
     {
 
@@ -213,7 +254,8 @@ class StaffController extends Controller
 
           if ($productCategory) {
             // Product found, you can access $productCategory attributes
-            $category = $productCategory->category; // Example of accessing a related attribute
+            $category = $productCategory->category; 
+            $price = $productCategory->price;
         } else {
             // Handle the case where no product is found
             return redirect()->back()->with('error', 'Product not found.');
@@ -225,7 +267,7 @@ class StaffController extends Controller
         $receive->quantity = $request->input('receiveQuantity');
         $receive->dateReceived = $request->input('receiveDateReceived');
         $receive->expired = $request->input('receiveExpired');
-        $receive->amount = $request->input('receiveAmount');
+        $receive->amount = $price;
         $receive->supplier = $request->input('receiveSupplier');
         $receive->productCategory = $category;
         
@@ -383,11 +425,41 @@ class StaffController extends Controller
 
     public function expiredList()
     {
-
-       // Fetch records where the expiration date is less than or equal to today's date and time
+        // Fetch records where the expiration date is less than or equal to today's date and time
         $receives = Receive::where('expired', '<=', Carbon::now()->endOfDay())->get();
-        
-        return view ('staff.expired-list', compact('receives'));
+    
+        if ($receives->isEmpty()) {
+            return view('staff.expired-list', [
+                'receives' => $receives, // Pass the variable to the view
+                'info' => 'No expired items found.'
+            ]);
+        }
+    
+        $errorMessage = null;
+    
+        foreach ($receives as $receive) {
+            // Find the corresponding stock record
+            $stock = Stock::where('reference', $receive->reference)->first();
+            
+            if ($stock) {
+                // Update the stock record
+                $remainingStock = $stock->stockAvailable;
+                $stock->expired = $remainingStock;
+                $stock->stockAvailable = 0;
+                $stock->save();
+            } else {
+                // Set an error message if stock record is not found
+                $errorMessage = 'Stock record not found for reference: ' . $receive->reference;
+                // Continue processing remaining records even if one fails
+            }
+        }
+    
+        // Return the view with a success or error message
+        return view('staff.expired-list', [
+            'receives' => $receives,
+            'success' => 'Expired items updated successfully.',
+            'error' => $errorMessage
+        ]);
     }
 
     public function supplierList()

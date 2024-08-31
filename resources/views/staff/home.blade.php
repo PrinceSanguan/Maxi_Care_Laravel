@@ -22,16 +22,17 @@
         
         <div class="sales-info">
             <div class="sales-card today-sales">
-                <h2>Today Sales :</h2>
-                <p>(06-24-2024)</p>
-                <p class="sales-amount">Php 9,299.00</p>
+                <h2>Today's Sales :</h2>
+                <p>{{ $todayDate }}</p> <!-- Display formatted current date -->
+                <p class="sales-amount">Php {{ number_format($salesToday, 2) }}</p>
             </div>
             <div class="sales-card monthly-sales">
                 <h2>Total Monthly Sales :</h2>
-                <p>June</p>
-                <p class="sales-amount">Php 12,299.00</p>
+                <p>{{ $currentMonth }}</p> <!-- Display formatted current month -->
+                <p class="sales-amount">Php {{ number_format($salesMonth, 2) }}</p>
             </div>
         </div>
+
     </div>
     
     <!-- Logout ng Modal -->

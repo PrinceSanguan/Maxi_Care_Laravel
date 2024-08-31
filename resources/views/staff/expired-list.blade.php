@@ -47,15 +47,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($receives as $index => $receive)
+                    @forelse($receives as $index => $receive)
                     <tr>
-                        <td>{{$index + 1}}</td>
-                        <td>{{$receive->product}}</td>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $receive->product }}</td>
                         <td>{{ $receive->expired->format('F j, Y') }}</td>
-                        <td>{{$receive->productCategory}}</td>
-                        <td>{{$receive->amount}}</td>
+                        <td>{{ $receive->productCategory }}</td>
+                        <td>{{ $receive->quantity }}</td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="5">No expired items found.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
             <div class="pagination">
