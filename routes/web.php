@@ -32,6 +32,8 @@ Route::get('admin/home', [AdminController::class, 'index'])->name('admin.home');
 
 Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::post('admin/dashboard', [AdminController::class, 'newUser'])->name('admin.new.user');
+Route::post('admin/dashboard/update', [AdminController::class, 'editUser'])->name('admin.edit.user');
+Route::delete('admin/dashboard/delete/{id}', [AdminController::class, 'deleteUser'])->name('admin.delete.user');
 
 Route::get('admin/sales-report', [AdminController::class, 'salesReport'])->name('admin.sales-report');
 /******************************************** This Route is For Admin *****************************/

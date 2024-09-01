@@ -54,6 +54,34 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'You have successfully  added new user!');
     }
 
+    public function editUser(Request $request)
+    {
+        $user = User::find($request->input('userId'));
+        $user->username = $request->input('userUserName');
+        $user->email = $request->input('userEmail');
+        
+        $user->save();
+
+        if (!$user) {
+            return redirect()->route('admin.dashboard')->with('error', 'Failed to edit staff.');
+        }
+    
+        // Redirect with success message
+        return redirect()->route('admin.dashboard')->with('success', 'You have successfully edit a staff!');
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            return redirect()->back()->with('success', 'deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'not found.');
+        }
+    }
+
     public function salesReport()
     {
         return view ('admin.sales-report');

@@ -41,7 +41,24 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->username }}</td> <!-- Assuming you have a 'username' field in your User model -->
-                                <td><button class="action-btn">Action</button></td>
+                                <td>
+                                    <button class="action-btn edit-btn btn btn-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editModal"
+                                    data-user-id="{{$user->id}}"
+                                    data-user-username="{{$user->username}}"
+                                    data-user-email="{{$user->email}}"
+                                    >
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </button>
+                                    <form action="{{ route('admin.delete.user', $user->id) }}" method="post" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this staff?');">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -56,6 +73,38 @@
             <p>&copy; 2024 Maxi Health. All Rights Reserved.</p>
         </div>
     </footer>
+
+    <!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Staff</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action=" {{ route('admin.edit.user') }} " method="post">
+                    @csrf
+                    <!-- Hidden input to store the supply ID -->
+                    <input type="hidden" id="userId" name="userId">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Staff Name</label>
+                        <input type="text" class="form-control" id="userUserName" name="userUserName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="userEmail" name="userEmail" required>
+                    </div>            
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
     <!-- New User Modal -->
@@ -115,6 +164,26 @@
           });
       @endif
   });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var editModal = document.getElementById('editModal');
+        
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            
+            // Extract data-* attributes from the button
+            var userId = button.getAttribute('data-user-id');
+            var userUserName = button.getAttribute('data-user-username');
+            var userEmail = button.getAttribute('data-user-email');
+            
+            // Populate the modal form fields with the data
+            editModal.querySelector('#userId').value = userId;
+            editModal.querySelector('#userUserName').value = userUserName;
+            editModal.querySelector('#userEmail').value = userEmail;
+        });
+    });
 </script>
 
 </body>
