@@ -67,7 +67,7 @@
         </section>
     </div>
 
-    <!-- Modal -->
+<!-- Modal -->
 <div id="newSalesModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -79,38 +79,46 @@
             </div>
 
             <div class="modal-body">
-
                 <form method="post" action="{{route('staff.new-sales')}}">
                     @csrf
 
                     <div class="mb-3">
-                        <label for="productName" class="form-label">Product Name</label>
-                        <select id="productName" name="productName" class="form-control form-select" required>
-                            <option value="" disabled selected>Select a Product</option>
-                            @foreach($stocks as $stock)
-                                <option value="{{ $stock->productName }}">{{ $stock->productName }}</option>
-                            @endforeach
-                        </select>
+                        <label for="productSearchTable" class="form-label">Select a Product</label>
+                        <table id="productSearchTable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($stocks as $stock)
+                                <tr class="product-option" data-product-name="{{ $stock->productName }}">
+                                    <td>
+                                        {{ $stock->productName }}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                  
+
+                    <!-- Hidden field to store the selected product -->
+                    <input type="hidden" id="productName" name="productName" required>
+
                     <div class="form-group">
-                      <label>Quantity</label>   
-                  
-                      <input type="number" name="quantity" class="form-control" required min="1"> </div>
-                  
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>   
-                  
-                      <button type="submit" class="btn btn-primary">Save</button>   
-                  
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" class="form-control" required min="1">
                     </div>
-                  </form>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
-            
         </div>
     </div>
 </div>
-
     
     @include('staff.footer')
 
@@ -150,6 +158,43 @@
             });
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize DataTables on the product search table
+        var productTable = $('#productSearchTable').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true
+        });
+
+        // Handle product selection
+        $('#productSearchTable tbody').on('click', 'tr', function() {
+            // Remove highlight from all rows
+            $('#productSearchTable tbody tr').removeClass('selected-product');
+            
+            // Highlight the selected row
+            $(this).addClass('selected-product');
+
+            // Get the product name and set it in the hidden input field
+            var productName = $(this).data('product-name');
+            $('#productName').val(productName); // Set the selected product name in the hidden input field
+        });
+    });
+</script>
+
+<style>
+    /* Highlight selected row */
+    .selected-product {
+        background-color: #d1ecf1 !important; /* Light blue background */
+        color: #0c5460 !important; /* Darker text for contrast */
+    }
+
+    /* Pointer cursor for clickable rows */
+    .product-option {
+        cursor: pointer;
+    }
+</style>
 
         <!----Sweet Alert---->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
