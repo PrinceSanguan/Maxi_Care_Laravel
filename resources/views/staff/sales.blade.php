@@ -8,6 +8,9 @@
     <link rel="icon" href="{{asset('images/maxi.jpg')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!--DATATABLES-->
+     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -23,23 +26,9 @@
         </header>
 
         <section class="inventory">
-            
-                <button class="new-sales-btn btn btn-primary"><i class="fa fa-plus"></i> New Sales</button>
-            
-            <div class="inventory-controls">
-                <label>Show 
-                    <select>
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select> entries
-                </label>
-                <label>Search: 
-                    <input type="text">
-                </label>
-            </div>
-            <table class="inventory-table">
+            <button class="new-sales-btn btn btn-primary"><i class="fa fa-plus"></i> New Sales</button>
+
+            <table class="inventory-table" id="inventory-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -55,7 +44,7 @@
                 <tbody>
                     @foreach($sales as $index => $sale)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td id="search">{{ $index + 1 }}</td>
                         <td>{{$sale->created_at->format('F j, Y') }}</td>
                         <td>{{$sale->reference}}</td>
                         <td>{{$sale->productName}}</td>
@@ -75,14 +64,6 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="pagination">
-                <span>Showing 1 to 4 of 4 entries</span>
-                <div>
-                    <button>Previous</button>
-                    <span>1</span>
-                    <button>Next</button>
-                </div>
-            </div>
         </section>
     </div>
 
@@ -133,8 +114,11 @@
     
     @include('staff.footer')
 
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -153,6 +137,16 @@
             // Ensure the modal can be closed by the 'Close' button in the footer
             document.querySelector('.modal-footer .btn-secondary').addEventListener('click', function () {
                 $('#newSalesModal').modal('hide');
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.inventory-table').DataTable({
+                paging: true,
+                searching: true,
+                lengthChange: true
             });
         });
     </script>
