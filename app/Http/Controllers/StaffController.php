@@ -403,7 +403,7 @@ class StaffController extends Controller
     public function updateMedicine(Request $request)
     {
         $medicine = Medicine::find($request->input('medicineId'));
-        $medicine->product = $request->input('medicineProduct');
+        $medicine->productName = $request->input('medicineProduct');
         $medicine->category = $request->input('medicineCategory');
         $medicine->price = $request->input('medicinePrice');
         $medicine->save();

@@ -54,7 +54,9 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Supplier Info</th>
+                                <th>Product Category</th>
+                                <td>Email</td>
+                                <td>Product Name</td>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -62,9 +64,11 @@
                             @foreach($supply as $index => $supplies)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $supplies->supplier }}, {{ $supplies->email }}, {{ $supplies->product }}</td>
+                                <td>{{ $supplies->supplier }}</td>
+                                <td>{{ $supplies->email }}</td>
+                                <td>{{ $supplies->product }}</td>
                                 <td>
-                                    <button class="action-btn edit-btn btn btn-primary" 
+                                    <button class="action-btn edit-btn btn btn-primary equal-btn" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#editModal"
                                         data-supply-id="{{ $supplies->id }}"
@@ -76,7 +80,7 @@
                                     <form action="{{ route('staff.delete-supplier', $supplies->id) }}" method="post" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this supplier?');">
+                                        <button type="submit" class="action-btn delete-btn btn btn-danger equal-btn" onclick="return confirm('Are you sure you want to delete this supplier?');">
                                             <i class="fa-solid fa-trash"></i> Delete
                                         </button>
                                     </form>

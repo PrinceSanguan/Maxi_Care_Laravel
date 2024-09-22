@@ -48,7 +48,7 @@
                     <input type="text" name="productInformation" required>
 
                     <label for="price">Price</label>
-                    <input type="number" id="price" name="price" required min="1">
+                    <input type="number" id="price" name="price" required min="1" oninput="this.value = Math.abs(this.value)">
 
                     <label for="prescription">Medicine requires Prescription</label>
                     <input type="checkbox" id="prescription" name="prescription">
@@ -106,12 +106,12 @@
                             <td>{{ $medicines->category }}</td>
                             <td>{{ $medicines->price }}</td>
                             <td>
-                                <button class="action-btn edit-btn btn btn-primary" 
+                                <button class="action-btn edit-btn btn btn-primary equal-btn" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#editModal"
                                     data-medicine-id="{{ $medicines->id }}"
-                                    data-medicine-product="{{ $medicines->product }}"
-                                    data-medicine-category="{{ $medicines->category }}"
+                                    data-medicine-product="{{ $medicines->productName }}"
+                                    {{-- data-medicine-category="{{ $medicines->category }}" --}}
                                     data-medicine-price="{{ $medicines->price }}"
                                     >
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -119,7 +119,7 @@
                                 <form action="{{ route('staff.delete-medicine', $medicines->id) }}" method="post" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="action-btn delete-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this medicine?');">
+                                    <button type="submit" class="action-btn delete-btn btn btn-danger equal-btn" onclick="return confirm('Are you sure you want to delete this medicine?');">
                                         <i class="fa-solid fa-trash"></i> Delete
                                     </button>
                                 </form>
@@ -151,10 +151,20 @@
                         <label for="medicineProduct" class="form-label">Product Information</label>
                         <input type="text" class="form-control" id="medicineProduct" name="medicineProduct" required>
                     </div>
-
+{{-- 
                     <div class="mb-3">
                         <label for="medicineCategory" class="form-label">Category</label>
                         <input type="text" class="form-control" id="medicineCategory" name="medicineCategory" readonly>
+                    </div> --}}
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" name="medicineCategory" class="form-control" required>
+                            <option value="">Select a category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->category }}">{{ $category->category }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -212,13 +222,13 @@
             // Extract data-* attributes from the button
             var medicineId = button.getAttribute('data-medicine-id');
             var medicineProduct = button.getAttribute('data-medicine-product');
-            var medicineCategory = button.getAttribute('data-medicine-category');
+           /*  var medicineCategory = button.getAttribute('data-medicine-category'); */
             var medicinePrice = button.getAttribute('data-medicine-price');
             
             // Populate the modal form fields with the data
             editModal.querySelector('#medicineId').value = medicineId;
             editModal.querySelector('#medicineProduct').value = medicineProduct;
-            editModal.querySelector('#medicineCategory').value = medicineCategory;           ;
+            /* editModal.querySelector('#medicineCategory').value = medicineCategory;   */         ;
             editModal.querySelector('#medicinePrice').value = medicinePrice;
         });
     });

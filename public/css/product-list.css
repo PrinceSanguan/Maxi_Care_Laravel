@@ -114,9 +114,21 @@ body {
     justify-content: space-between;
 }
 
-.product-form,
+.equal-btn {
+    width: 100px; /* Adjust this width as needed */
+    display: inline-block;
+}
+
 .medicine-list {
-    width: 48%;
+    width: 63%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.product-form {
+    width: 35%;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -205,6 +217,12 @@ select {
 .medicine-list td .action-buttons {
     display: flex;
     gap: 5px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column; /* Change to 'row' for horizontal alignment */
+    align-items: center; /* Optional: Center buttons horizontally */
 }
 
 .edit-btn,

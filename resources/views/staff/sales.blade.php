@@ -107,7 +107,7 @@
 
                     <div class="form-group">
                         <label>Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required min="1">
+                        <input type="number" name="quantity" class="form-control" required min="1" oninput="this.value = Math.abs(this.value)">
                     </div>
 
                     <div class="modal-footer">

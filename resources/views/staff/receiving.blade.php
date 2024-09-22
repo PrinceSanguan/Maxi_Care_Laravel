@@ -139,7 +139,7 @@
                     </div>
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" class="form-control" required min="1">
+                        <input type="number" id="quantity" name="quantity" class="form-control" required min="1" oninput="this.value = Math.abs(this.value)">
                     </div>
 
                     <!-- New Radio Buttons for Stock Type -->

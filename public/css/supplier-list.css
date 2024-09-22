@@ -16,6 +16,11 @@ body {
     overflow: auto;
 }
 
+.equal-btn {
+    width: 100px; /* Adjust this width as needed */
+    display: inline-block;
+}
+
 .sidebar-logo {
     display: block;
     margin: 0 auto;
@@ -151,8 +156,8 @@ body {
     padding: 20px;
     background-color: #f4f4f9;
     border-radius: 8px;
-    width: 45%; /* Keep the width consistent */
-    height: 250px; /* Fixed height for the table */
+    width: 65%; /* Keep the width consistent */
+    height: 550px; /* Fixed height for the table */
     overflow-y: auto; /* Scroll if content overflows */
 }
 
