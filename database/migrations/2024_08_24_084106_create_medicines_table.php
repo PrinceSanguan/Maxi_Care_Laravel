@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('category');
             $table->string('productName');
             $table->string('productInformation');
-            $table->unsignedInteger('price');
+            $table->decimal('price', 8, 2);
             $table->string('prescription');
             $table->timestamps();
         });

@@ -14,8 +14,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
+            $table->string('username')->unique();
             $table->string('email')->unique();
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('userRole');
             $table->string('password');
             $table->timestamps();
@@ -26,6 +28,8 @@ return new class extends Migration
             [
                 'username' => 'admin',
                 'email' => 'admin@gmail.com',
+                'first_name' => 'admin',
+                'last_name' => 'admin',
                 'userRole' => 'admin',
                 'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
                 'created_at' => now(),

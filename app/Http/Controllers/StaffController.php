@@ -377,11 +377,19 @@ class StaffController extends Controller
             'category' => 'required',
             'productName' => 'required',
             'productInformation' => 'required',
-            'price' => 'required',
+            'price' => 'required|numeric|min:0',
         ]);
     
         // Get the prescription input or default to 'off' if null
         $prescription = $request->input('prescription', 'off');
+    
+        // Format the price to two decimal places, adding .00 for whole numbers
+        $price = $request->input('price');
+        if (floor($price) == $price) {
+            $price = number_format($price, 2, '.', '');
+        } else {
+            $price = number_format($price, 2, '.', '');
+        }
     
         // Saving in the database
         $medicine = Medicine::create([
@@ -389,7 +397,7 @@ class StaffController extends Controller
             'productName' => $request->input('productName'),
             'productInformation' => $request->input('productInformation'),
             'prescription' => $prescription,
-            'price' => $request->input('price'),
+            'price' => $price,
         ]);
     
         if (!$medicine) {
