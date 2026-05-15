@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -22,20 +21,6 @@ return new class extends Migration
             $table->string('password');
             $table->timestamps();
         });
-    
-        // Insert default data after the table has been created
-        DB::table('users')->insert([
-            [
-                'username' => 'admin',
-                'email' => 'admin@gmail.com',
-                'first_name' => 'admin',
-                'last_name' => 'admin',
-                'userRole' => 'admin',
-                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
     }
 
     /**

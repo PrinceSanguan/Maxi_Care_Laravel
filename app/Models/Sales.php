@@ -15,6 +15,12 @@ class Sales extends Model
         'quantity',
         'price',
         'amount',
-        
+
+    ];
+
+    protected $casts = [
+        'quantity' => 'integer',
+        'price' => 'decimal:2',
+        'amount' => 'decimal:2',
     ];
 }

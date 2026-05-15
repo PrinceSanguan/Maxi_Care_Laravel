@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem D:\\\\Capstone Projects\\\\Maxi-Care-Laravel\\\\app\\\\Http\\\\Middleware *)",
+      "Bash(xargs grep -l \"DB::statement\\\\|DB::raw\\\\|raw SQL\")"
+    ]
+  }
+}

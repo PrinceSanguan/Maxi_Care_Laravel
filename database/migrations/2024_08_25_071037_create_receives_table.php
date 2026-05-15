@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('reference')->unique();
             $table->string('product');
-            $table->string('quantity');
-            $table->string('safetyStock')->nullable();
-            $table->string('stockAvailable')->nullable();
-            $table->string('dateReceived');
+            $table->integer('quantity');
+            $table->integer('safetyStock')->nullable();
+            $table->integer('stockAvailable')->nullable();
+            $table->date('dateReceived');
             $table->datetime('expired');
-            $table->string('amount');
+            $table->decimal('amount', 10, 2);
             $table->string('productCategory');
             $table->string('supplier');
             $table->timestamps();

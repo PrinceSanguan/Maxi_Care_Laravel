@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('reference');
             $table->string('productName');
-            $table->string('quantity');
-            $table->string('price');
-            $table->string('amount');
+            $table->integer('quantity');
+            $table->decimal('price', 10, 2);
+            $table->decimal('amount', 10, 2);
             $table->timestamps();
         });
     }

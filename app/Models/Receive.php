@@ -26,6 +26,10 @@ class Receive extends Model
     protected $casts = [
         'expired' => 'date',
         'dateReceived' => 'date',
+        'quantity' => 'integer',
+        'safetyStock' => 'integer',
+        'stockAvailable' => 'integer',
+        'amount' => 'decimal:2',
     ];
 }
 
